@@ -42,7 +42,6 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header,
     /* determine protocol */
       printf("   From: %s\n", inet_ntoa(ip->iph_sourceip));  
       printf("   To: %s\n", inet_ntoa(ip->iph_destip));     
-      printf("   protocol type number: %d\n",ip->iph_protocol);  
       printf("\n");           
       return;
     }
@@ -57,6 +56,8 @@ int main()
   pcap_t *handle;
   char errbuf[PCAP_ERRBUF_SIZE];
   struct bpf_program fp;
+  char filter_icmp[] = "icmp"; // filter ICMP pkt
+  char filter_tcp[] = "tcp and dst portrange 10-100"; // filter TCP and only via port 10-100
   bpf_u_int32 net;
 
   // Step 1: Open live pcap session on NIC with name any, its mean all my ethernet card.
@@ -68,7 +69,7 @@ int main()
   }
   printf("pcap open live is done successfully!\n");
   // Step 2: Compile filter_exp into BPF psuedo-code
-  pcap_compile(handle, &fp, NULL, 0, net);      
+  pcap_compile(handle, &fp, filter_tcp, 0, net);      
   pcap_setfilter(handle, &fp);                             
   printf("start sniffing..\n");
 
