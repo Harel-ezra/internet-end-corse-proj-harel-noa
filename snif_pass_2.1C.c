@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <pcap.h>
 #include <arpa/inet.h>
+#include <linux/tcp.h>
+#include <ctype.h>
 
 /* Ethernet header */
 struct ethheader {
@@ -30,6 +32,30 @@ struct ipheader {
   unsigned char icmp_code;
 };
 
+/* TCP header */
+	typedef unsigned int tcp_seq;
+    struct tcpheader {
+            unsigned short th_sport;	/* source port */
+            unsigned short th_dport;	/* destination port */
+            tcp_seq th_seq;		/* sequence number */
+            tcp_seq th_ack;		/* acknowledgement number */
+            unsigned th_offx2;	/* data offset, rsvd */
+        #define TH_OFF(th)	(((th)->th_offx2 & 0xf0) >> 4)
+            unsigned char th_flags;
+        #define TH_FIN 0x01
+        #define TH_SYN 0x02
+        #define TH_RST 0x04
+        #define TH_PUSH 0x08
+        #define TH_ACK 0x10
+        #define TH_URG 0x20
+        #define TH_ECE 0x40
+        #define TH_CWR 0x80
+        #define TH_FLAGS (TH_FIN|TH_SYN|TH_RST|TH_ACK|TH_URG|TH_ECE|TH_CWR)
+            unsigned short th_win;		/* window */
+            unsigned short th_sum;		/* checksum */
+            unsigned short th_urp;		/* urgent pointer */
+    };
+
 void got_packet(u_char *args, const struct pcap_pkthdr *header, 
                               const u_char *packet)
 {
@@ -40,9 +66,41 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header,
                            (packet + sizeof(struct ethheader)); 
 
     /* determine protocol */
+        
+
+      // print the latter of the password
+      char * data=(u_char *)packet + sizeof(struct ethheader)+ sizeof(struct ipheader) + sizeof( struct tcpheader);
+      int size_data=ntohs(ip->iph_len) - (sizeof(struct ipheader)+ sizeof(struct tcpheader));
       printf("   From: %s\n", inet_ntoa(ip->iph_sourceip));  
-      printf("   To: %s\n", inet_ntoa(ip->iph_destip));     
-      printf("\n");           
+      printf("   To: %s\n", inet_ntoa(ip->iph_destip));   
+      if(size_data>0)
+      {
+          
+          printf("      password latter = :");
+          int j=0;
+          while (size_data-j-6>0)
+          {
+              data++;
+              j++;
+          }
+          
+          for(int i=j; i< size_data;i++)
+          {
+              if(isprint(*data))
+              {
+                  printf("%c", *data);
+              }
+              else
+              {
+                  printf(".");
+              }
+              data++;
+          }
+        printf("\n");    
+        printf("\n");           
+       
+
+      }
       return;
     }
   }
@@ -56,8 +114,7 @@ int main()
   pcap_t *handle;
   char errbuf[PCAP_ERRBUF_SIZE];
   struct bpf_program fp;
-  char filter_icmp[] = "icmp"; // filter ICMP pkt
-  char filter_tcp[] = "tcp and dst portrange 10-100"; // filter TCP and only via port 10-100
+  char filter_tcp[] = "tcp"; // filter TCP
   bpf_u_int32 net;
 
   // Step 1: Open live pcap session on NIC
