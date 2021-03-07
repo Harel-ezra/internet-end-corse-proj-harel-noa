@@ -123,58 +123,6 @@ unsigned short in_cksum(unsigned short *buf, int length)
     return (unsigned short)(~sum);
 }
 
-/****************************************************************
-  TCP checksum is calculated on the pseudo header, which includes
-  the TCP header and data, plus some part of the IP header.
-  Therefore, we need to construct the pseudo header first.
-*****************************************************************/
-
-// unsigned short calculate_tcp_checksum(struct ipheader *ip)
-// {
-//     struct tcpheader *tcp = (struct tcpheader *)((u_char *)ip +
-//                                                  sizeof(struct ipheader));
-
-//     int tcp_len = ntohs(ip->iph_len) - sizeof(struct ipheader);
-
-//     /* pseudo tcp header for the checksum computation */
-//     struct pseudo_tcp p_tcp;
-//     memset(&p_tcp, 0x0, sizeof(struct pseudo_tcp));
-
-//     p_tcp.saddr = ip->iph_sourceip.s_addr;
-//     p_tcp.daddr = ip->iph_destip.s_addr;
-//     p_tcp.mbz = 0;
-//     p_tcp.ptcl = IPPROTO_TCP;
-//     p_tcp.tcpl = htons(tcp_len);
-//     memcpy(&p_tcp.tcp, tcp, tcp_len);
-
-//     return (unsigned short)in_cksum((unsigned short *)&p_tcp,
-//                                     tcp_len + 12);
-// }
-
-/* Ethernet header */
-// struct ethheader {
-//   u_char  ether_dhost[ETHER_ADDR_LEN]; /* destination host address */
-//   u_char  ether_shost[ETHER_ADDR_LEN]; /* source host address */
-//   u_short ether_type;                  /* IP? ARP? RARP? etc */
-// };
-
-// /* IP Header */
-// struct ipheader {
-//   unsigned char      iph_ihl:4, //IP header length
-//                      iph_ver:4; //IP version
-//   unsigned char      iph_tos; //Type of service
-//   unsigned short int iph_len; //IP Packet length (data + header)
-//   unsigned short int iph_ident; //Identification
-//   unsigned short int iph_flag:3, //Fragmentation flags
-//                      iph_offset:13; //Flags offset
-//   unsigned char      iph_ttl; //Time to Live
-//   unsigned char      iph_protocol; //Protocol type
-//   unsigned short int iph_chksum; //IP datagram checksum
-//   struct  in_addr    iph_sourceip; //Source IP address
-//   struct  in_addr    iph_destip;   //Destination IP address
-//   unsigned char icmp_type;
-//   unsigned char icmp_code;
-// };
 #define addr_len 20
 void got_packet(u_char *args, const struct pcap_pkthdr *header,
                 const u_char *packet)

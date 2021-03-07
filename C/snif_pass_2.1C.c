@@ -73,60 +73,31 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header,
 
     struct tcpheader *tcp = (struct tcpheader *)(packet + sizeof(struct ethheader) + sizeof(struct ipheader));
 
-    // print the latter of the password
+    // print the password
     char *data = (u_char *)(packet + sizeof(struct ethheader) + sizeof(struct ipheader) + sizeof(struct tcpheader));
     int size_data = ntohs(ip->iph_len) - (sizeof(struct ipheader) + sizeof(struct tcpheader));
-    //if (ntohs(tcp->th_dport) == 23)
     {
       printf("   From: %s\n", inet_ntoa(ip->iph_sourceip));
       printf("   To: %s\n", inet_ntoa(ip->iph_destip));
       printf("      password latter = :");
       for (size_t i = 0; i < strlen(data); i++)
       {
-          if (isprint(*(data + i)))
-          {
+        if (isprint(*(data + i)))
+        {
           printf("%c", *(data + i));
-          }
-          else
-          {
+        }
+        else
+        {
           printf(".");
-          }
+        }
       }
       printf("\n\n");
-
-      // if (size_data > 0)
-      // {
-
-      //   printf("      password latter = :");
-      //   int j = 0;
-      //   while (size_data - j - 6 > 0)
-      //   {
-      //     data++;
-      //     j++;
-      //   }
-
-      //   for (int i = j; i < size_data; i++)
-      //   {
-      //     if (isprint(*data))
-      //     {
-      //       printf("%c", *data);
-      //     }
-      //     else
-      //     {
-      //       printf(".");
-      //     }
-      //     data++;
-      //   }
-      // }
-      // printf("\n");
-      // printf("\n");
     }
   }
   return;
 }
-/**********************************************
- * Listing 12.3: Packet Capturing using raw libpcap
- **********************************************/
+
+
 int main()
 {
   pcap_t *handle;

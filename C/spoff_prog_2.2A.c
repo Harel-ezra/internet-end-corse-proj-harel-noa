@@ -86,6 +86,7 @@ void send_raw_ip_packet(struct ipheader* ip)
     printf("close the socket\n");
 
 }
+// calculate the packet size
 unsigned short in_cksum (unsigned short *buf, int length)
 {
    unsigned short *w = buf;
@@ -115,31 +116,4 @@ unsigned short in_cksum (unsigned short *buf, int length)
    return (unsigned short)(~sum);
 }
 
-/****************************************************************
-  TCP checksum is calculated on the pseudo header, which includes
-  the TCP header and data, plus some part of the IP header.
-  Therefore, we need to construct the pseudo header first.
-*****************************************************************/
 
-
-unsigned short calculate_tcp_checksum(struct ipheader *ip)
-{
-   struct tcpheader *tcp = (struct tcpheader *)((u_char *)ip +
-                            sizeof(struct ipheader));
-
-   int tcp_len = ntohs(ip->iph_len) - sizeof(struct ipheader);
-
-   /* pseudo tcp header for the checksum computation */
-   struct pseudo_tcp p_tcp;
-   memset(&p_tcp, 0x0, sizeof(struct pseudo_tcp));
-
-   p_tcp.saddr  = ip->iph_sourceip.s_addr;
-   p_tcp.daddr  = ip->iph_destip.s_addr;
-   p_tcp.mbz    = 0;
-   p_tcp.ptcl   = IPPROTO_TCP;
-   p_tcp.tcpl   = htons(tcp_len);
-   memcpy(&p_tcp.tcp, tcp, tcp_len);
-
-   return  (unsigned short) in_cksum((unsigned short *)&p_tcp,
-                                     tcp_len + 12);
-}

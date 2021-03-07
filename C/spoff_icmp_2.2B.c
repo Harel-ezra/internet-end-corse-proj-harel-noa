@@ -5,7 +5,6 @@
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 #include <stdlib.h>
-
 #include "myheader.h"
 
 unsigned short in_cksum (unsigned short *buf, int length);

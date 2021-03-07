@@ -30,6 +30,7 @@ struct ipheader {
   unsigned char icmp_code;
 };
 
+// got the packet
 void got_packet(u_char *args, const struct pcap_pkthdr *header, 
                               const u_char *packet)
 {
@@ -49,9 +50,6 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header,
   }
 
  
-/**********************************************
- * Listing 12.3: Packet Capturing using raw libpcap
- **********************************************/
 int main()
 {
   pcap_t *handle;
@@ -67,6 +65,7 @@ int main()
     return 1;
   }
   printf("pcap open live is done successfully!\n");
+  
   // Step 2: Compile filter_exp into BPF psuedo-code
   pcap_compile(handle, &fp, NULL, 0, net);      
   pcap_setfilter(handle, &fp);                             

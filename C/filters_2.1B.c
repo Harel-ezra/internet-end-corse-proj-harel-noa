@@ -30,6 +30,7 @@ struct ipheader {
   unsigned char icmp_code;
 };
 
+//got packet
 void got_packet(u_char *args, const struct pcap_pkthdr *header, 
                               const u_char *packet)
 {
@@ -68,6 +69,7 @@ int main()
     return 1;
   }
   printf("pcap open live is done successfully!\n");
+  
   // Step 2: Compile filter_exp into BPF psuedo-code
   pcap_compile(handle, &fp, filter_tcp, 0, net);
   pcap_setfilter(handle, &fp);                             
