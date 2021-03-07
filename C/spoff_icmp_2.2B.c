@@ -78,7 +78,7 @@ void send_raw_ip_packet(struct ipheader* ip)
     printf("start sending packet..\n");
     sleep(2);
     // Step 4: Send the packet out.
-    sendto(sock, ip, ntohs(ip->iph_len), 0,
+    int s=sendto(sock, ip, ntohs(ip->iph_len), 0,
            (struct sockaddr *)&dest_info, sizeof(dest_info));
     printf("sent packet is done successfully\n");
 

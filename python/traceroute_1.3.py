@@ -3,7 +3,7 @@ from scapy.all import *
 def trace_route():
 	a = IP()
 	a.dst = '1.1.1.1'
-	a.ttl = 9
+	a.ttl = 8
 	ls(a)
 	b = ICMP()
 	p=a/b

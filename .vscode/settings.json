@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "ip_icmp.h": "c",
+        "myheader.h": "c"
     }
 }

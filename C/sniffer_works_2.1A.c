@@ -59,7 +59,7 @@ int main()
   struct bpf_program fp;
   bpf_u_int32 net;
 
-  // Step 1: Open live pcap session on NIC with name any, its mean all my ethernet card.
+  // Step 1: Open live pcap session on NIC.
   handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1000, errbuf); 
   if(handle==NULL)
   {
